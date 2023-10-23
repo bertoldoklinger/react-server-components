@@ -17,6 +17,7 @@ export function SearchInput({ search }: { search?: string }) {
       type="text"
       name="search"
       id="search"
+      defaultValue={search}
       className="block w-full rounded-md border-gray-300 pl-10 focus:ring-0 focus:border-gray-400 focus:outline-none text-sm"
       placeholder="Buscar"
       onChange={(event)=> {

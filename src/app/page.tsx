@@ -32,6 +32,15 @@ export default async function Users({ searchParams }: {searchParams: {[key: stri
     }
   })
 
+  const currentSearchParams = new URLSearchParams();
+
+  if (search) {
+    currentSearchParams.set("search", search);
+  }
+
+  if (page > 1) {
+    currentSearchParams.set("page", `${page}`);
+  }
   
   return (
     <div className="px-8 bg-gray-50 pt-12 min-h-screen">
@@ -95,10 +104,77 @@ export default async function Users({ searchParams }: {searchParams: {[key: stri
       <div className="mt-4 flex justify-between items-center">
         <p className="text-sm text-gray-700">Mostrando <span className="font-semibold">{(page - 1) * perPage + 1}</span> até{" "} <span className="font-semibold">{Math.min(page * perPage, totalUsers)}</span> de{" "}<span className="font-semibold">{totalUsers}</span> usuários</p>
         <div className="space-x-2">
-          <Link className={`${page === 1 ? "opacity-50 pointer-events-none" : "" } border border-gray-300 bg-white px-3 py-2 inline-flex items-center justify-center text-sm text-gray-900 font-semibold rounded-md hover:bg-gray-100`} href={page > 2 ? `/?page=${page - 1 }` : '/' }>Anterior</Link>
-          <Link className={ `${page >= totalPages ? "opacity-50 pointer-events-none" : "" } border border-gray-300 bg-white px-3 py-2 inline-flex items-center justify-center text-sm text-gray-900 font-semibold rounded-md hover:bg-gray-100`} href={page < totalPages ? `/?page=${page + 1}`: `/?page=${page}`}>Próximo</Link>
+        <PreviousPage page={page} currentSearchParams={currentSearchParams} />
+          <NextPage
+            page={page}
+            totalPages={totalPages}
+            currentSearchParams={currentSearchParams}
+          />
         </div>
       </div>
     </div>
+  );
+}
+
+
+function PreviousPage({
+  page,
+  currentSearchParams,
+}: {
+  page: number;
+  currentSearchParams: URLSearchParams;
+}) {
+  const newSearchParams = new URLSearchParams(currentSearchParams);
+
+  if (page > 2) {
+    newSearchParams.set("page", `${page - 1}`);
+  } else {
+    newSearchParams.delete("page");
+  }
+
+  return page > 1 ? (
+    <Link
+      href={`/?${newSearchParams}`}
+      className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50"
+    >
+      Anterior
+    </Link>
+  ) : (
+    <button
+      disabled
+      className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 opacity-50"
+    >
+      Anterior
+    </button>
+  );
+}
+
+function NextPage({
+  page,
+  totalPages,
+  currentSearchParams,
+}: {
+  page: number;
+  totalPages: number;
+  currentSearchParams: URLSearchParams;
+}) {
+  const newSearchParams = new URLSearchParams(currentSearchParams);
+
+  newSearchParams.set("page", `${page + 1}`);
+
+  return page < totalPages ? (
+    <Link
+      href={`/?${newSearchParams}`}
+      className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50"
+    >
+      Próximo
+    </Link>
+  ) : (
+    <button
+      disabled
+      className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 opacity-50"
+    >
+      Próximo
+    </button>
   );
 }
