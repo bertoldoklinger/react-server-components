@@ -1,36 +1,44 @@
 import { prisma } from "@/lib/prisma";
-import {
-  ChevronRightIcon
-} from "@heroicons/react/20/solid";
+import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { SearchInput } from "./components/SearchInput";
 
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
-export default async function Users({ searchParams }: {searchParams: {[key: string]: string | string[] | undefined}}) {
-  const search = typeof searchParams.search === "string" ? searchParams.search : undefined
+  const search =
+    typeof searchParams.search === "string" ? searchParams.search : undefined;
 
-  
-  const perPage = 6
+  const perPage = 7;
   const totalUsers = await prisma.user.count({
     where: {
       name: {
         contains: search,
-      }
-  }
-})
-  
+      },
+    },
+  });
   const totalPages = Math.ceil(totalUsers / perPage);
-  const page = typeof searchParams.page === "string" && +searchParams.page > 1 && +searchParams.page <= totalPages ? +searchParams.page : 1
-  
+
+  const page =
+    typeof searchParams.page === "string" &&
+    +searchParams.page > 1 &&
+    +searchParams.page <= totalPages
+      ? +searchParams.page
+      : 1;
+
   const users = await prisma.user.findMany({
     take: perPage,
     skip: (page - 1) * perPage,
     where: {
       name: {
         contains: search,
-      }
-    }
-  })
+      },
+    },
+  });
 
   const currentSearchParams = new URLSearchParams();
 
@@ -41,81 +49,99 @@ export default async function Users({ searchParams }: {searchParams: {[key: stri
   if (page > 1) {
     currentSearchParams.set("page", `${page}`);
   }
-  
+
   return (
-    <div className="px-8 bg-gray-50 pt-12 min-h-screen">
+    <div className="flex min-h-screen flex-col bg-gray-50 px-8 pt-12">
       <div className="flex items-center justify-between">
-        <div className="w-80 mt-1">
-          <SearchInput search={search}/>
+        <div className="mt-1 w-80">
+          <SearchInput search={search} />
         </div>
-        <div className="mt-0 ml-16 flex-none">
+        <div className="ml-16 mt-0 flex-none">
           <button
             type="button"
-            className="block rounded-md bg-indigo-600 py-1.5 px-3 text-center text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="block rounded-md border border-indigo-600 bg-indigo-600 px-3 py-1.5 text-center text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Adicionar Usuário
+            Add user
           </button>
         </div>
       </div>
-      <div className="mt-8 flow-root">
-        <div className="-my-2 -mx-6">
-          <div className="inline-block min-w-full py-2 align-middle px-6">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 pl-6">
-                      Nome
-                    </th>
-                    <th className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      E-mail
-                    </th>
-                    <th className="relative py-3.5 pl-3 pr-6">
-                      <span className="sr-only">Editar</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {users.map((user) => (
-                    <tr key={user.id}>
-                      <td className="whitespace-nowrap py-4 pr-3 text-sm font-medium text-gray-900 pl-6">
-                        {user.name}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {user.email}
-                      </td>
-                      <td className="relative whitespace-nowrap py-4 pl-4 pr-6 text-right text-sm font-medium">
-                        <a
-                          href="#"
-                          className="text-indigo-600 hover:text-indigo-900 inline-flex items-center"
-                        >
-                          Editar
-                          <ChevronRightIcon className="w-4 h-4" />
-                        </a>
-                      </td>
+
+      <div>
+        <div className="mt-8 flow-root">
+          <div className="-mx-6 -my-2">
+            <div className="inline-block min-w-full px-6 py-2 align-middle">
+              <div className="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5">
+                <table className="min-w-full divide-y divide-gray-300">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="w-[62px] py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:w-auto">
+                        ID
+                      </th>
+                      <th className="w-[130px] px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:w-auto">
+                        Name
+                      </th>
+                      <th className="w-[175px] px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:w-auto">
+                        Email
+                      </th>
+                      <th className="relative py-3.5 pl-3 pr-4">
+                        <span className="sr-only">Edit</span>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-white">
+                    {users.map((user) => (
+                      <tr key={user.id}>
+                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
+                          {user.id}
+                        </td>
+                        <td className="max-w-[130px] truncate whitespace-nowrap px-3 py-4 text-sm font-medium sm:w-auto">
+                          {user.name}
+                        </td>
+                        <td className="max-w-[175px] truncate whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:w-auto">
+                          {user.email}
+                        </td>
+                        <td className="relative whitespace-nowrap py-4 pl-4 pr-4 text-right text-sm font-medium">
+                          <a
+                            href="#"
+                            className="inline-flex items-center text-indigo-600 hover:text-indigo-900"
+                          >
+                            Edit
+                            <ChevronRightIcon className="h-4 w-4" />
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="mt-4 flex justify-between items-center">
-        <p className="text-sm text-gray-700">Mostrando <span className="font-semibold">{(page - 1) * perPage + 1}</span> até{" "} <span className="font-semibold">{Math.min(page * perPage, totalUsers)}</span> de{" "}<span className="font-semibold">{totalUsers}</span> usuários</p>
-        <div className="space-x-2">
-        <PreviousPage page={page} currentSearchParams={currentSearchParams} />
-          <NextPage
-            page={page}
-            totalPages={totalPages}
-            currentSearchParams={currentSearchParams}
-          />
+        <div className="mt-4 flex items-center justify-between">
+          <p className="text-sm text-gray-700">
+            Showing{" "}
+            <span className="font-semibold">{(page - 1) * perPage + 1}</span> to{" "}
+            <span className="font-semibold">
+              {Math.min(page * perPage, totalUsers)}
+            </span>{" "}
+            of <span className="font-semibold">{totalUsers}</span> users
+          </p>
+          <div className="space-x-2">
+            <PreviousPage
+              page={page}
+              currentSearchParams={currentSearchParams}
+            />
+            <NextPage
+              page={page}
+              totalPages={totalPages}
+              currentSearchParams={currentSearchParams}
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
 
 function PreviousPage({
   page,
@@ -137,14 +163,14 @@ function PreviousPage({
       href={`/?${newSearchParams}`}
       className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50"
     >
-      Anterior
+      Previous
     </Link>
   ) : (
     <button
       disabled
       className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 opacity-50"
     >
-      Anterior
+      Previous
     </button>
   );
 }
@@ -167,14 +193,14 @@ function NextPage({
       href={`/?${newSearchParams}`}
       className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50"
     >
-      Próximo
+      Next
     </Link>
   ) : (
     <button
       disabled
       className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 opacity-50"
     >
-      Próximo
+      Next
     </button>
   );
 }
