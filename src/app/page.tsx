@@ -24,7 +24,7 @@ export default async function Page({
             type="button"
             className="block rounded-md border border-indigo-600 bg-indigo-600 px-3 py-1.5 text-center text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Add user
+            Adicionar usuário
           </button>
         </div>
       </div>
@@ -104,13 +104,13 @@ async function UsersTable({
                       ID
                     </th>
                     <th className="w-[130px] px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:w-auto">
-                      Name
+                      Nome
                     </th>
                     <th className="w-[175px] px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:w-auto">
-                      Email
+                      E-mail
                     </th>
                     <th className="relative py-3.5 pl-3 pr-4">
-                      <span className="sr-only">Edit</span>
+                      <span className="sr-only">Editar</span>
                     </th>
                   </tr>
                 </thead>
@@ -131,7 +131,7 @@ async function UsersTable({
                           href="#"
                           className="inline-flex items-center text-indigo-600 hover:text-indigo-900"
                         >
-                          Edit
+                          Editar
                           <ChevronRightIcon className="h-4 w-4" />
                         </a>
                       </td>
@@ -145,12 +145,12 @@ async function UsersTable({
       </div>
       <div className="mt-4 flex items-center justify-between">
         <p className="text-sm text-gray-700">
-          Showing{" "}
-          <span className="font-semibold">{(page - 1) * perPage + 1}</span> to{" "}
+          Mostrando{" "}
+          <span className="font-semibold">{(page - 1) * perPage + 1}</span> até{" "}
           <span className="font-semibold">
             {Math.min(page * perPage, totalUsers)}
           </span>{" "}
-          of <span className="font-semibold">{totalUsers}</span> users
+          de <span className="font-semibold">{totalUsers}</span> usuários
         </p>
         <div className="space-x-2">
           <PreviousPage page={page} currentSearchParams={currentSearchParams} />
@@ -185,14 +185,14 @@ function PreviousPage({
       href={`/?${newSearchParams}`}
       className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50"
     >
-      Previous
+      Anterior
     </Link>
   ) : (
     <button
       disabled
       className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 opacity-50"
     >
-      Previous
+      Anterior
     </button>
   );
 }
@@ -215,14 +215,14 @@ function NextPage({
       href={`/?${newSearchParams}`}
       className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50"
     >
-      Next
+      Próxima
     </Link>
   ) : (
     <button
       disabled
       className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 opacity-50"
     >
-      Next
+      Próxima
     </button>
   );
 }
